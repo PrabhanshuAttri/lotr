@@ -125,6 +125,9 @@
     text-align: center;
     background: rgba(238,225,185,.72);
     box-shadow: inset 0 0 0 5px rgba(99,70,37,.08), 0 18px 38px rgba(65,45,22,.16);
+    opacity: 0;
+    filter: blur(8px);
+    transform: scale(1.02);
   }
   .success:focus { outline: none; }
   .success-content { max-width: 580px; }
@@ -137,23 +140,35 @@
   body.is-dissolving .paths,
   body.is-dissolving .note {
     pointer-events: none;
-    animation: dissolve-out 360ms ease-in both;
+    animation: dissolve-out 520ms ease-in both;
   }
-  .success.dissolve-in { animation: dissolve-in 460ms ease-out both; }
+  .success.dissolve-in { animation: dissolve-in 560ms ease-out both; }
   @keyframes dissolve-out {
     from { opacity: 1; filter: blur(0); transform: scale(1); }
-    to { opacity: 0; filter: blur(5px); transform: scale(.985); }
+    to { opacity: 0; filter: blur(10px); transform: scale(.97); }
   }
   @keyframes dissolve-in {
-    from { opacity: 0; filter: blur(6px); transform: scale(1.015); }
+    from { opacity: 0; filter: blur(8px); transform: scale(1.02); }
     to { opacity: 1; filter: blur(0); transform: scale(1); }
+  }
+  @keyframes reduced-dissolve-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  @keyframes reduced-dissolve-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) {
     body.is-dissolving header,
     body.is-dissolving .paths,
-    body.is-dissolving .note,
+    body.is-dissolving .note {
+      animation: reduced-dissolve-out 120ms linear both;
+    }
     .success.dissolve-in {
-      animation: none;
+      animation: reduced-dissolve-in 160ms linear both;
+      filter: none;
+      transform: none;
     }
   }
   @media (max-width: 820px) {
@@ -313,11 +328,6 @@
       requestAnimationFrame(() => success.classList.add("dissolve-in"));
       success.focus();
     };
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      completeSelection();
-      return;
-    }
 
     document.body.classList.add("is-dissolving");
     document.querySelector(".paths").addEventListener("animationend", completeSelection, { once: true });
